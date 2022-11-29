@@ -17,13 +17,13 @@ Para executar o projeto é necessário ter inslado no computador as ferramentas:
 - Nodemon (Para manter o projeto executando e auto-atualizando)
 
 ## Como iniciar o projeto (Windows).
-- Clonar o projeto (https://github.com/masc1005/marketplace.git)
+- Clonar o projeto (https://github.com/masc1005/socketA3.git)
 - Instalar as dependencias utilizando o comando: `npm install`
 - Executar o comando `npm run  dev`. (Inicia o projeto)
 - Em outra janela do terminal, execute o comando: `telnet 127.0.0.1 7075`
 
 ## Como iniciar o projeto (Linux || Mac).
-- Clonar o projeto (https://github.com/masc1005/marketplace.git)
+- Clonar o projeto (https://github.com/masc1005/socketA3.git)
 - Instalar as dependencias utilizando o comando: `npm install`
 - Executar o comando `npm run  dev`. (Inicia o projeto)
 - Em outra janela do terminal, execute o comando: `telnet 127.0.0.1 7075
