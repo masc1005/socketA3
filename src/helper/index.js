@@ -1,7 +1,10 @@
 const momente = require("moment");
+const path = require("node:path");
+
+const getData = path.resolve(__dirname, "../helper/getData");
 
 const { sales, sellers, stores } = require("../infos/sales");
-const getData = require("../helper/getData");
+const get = require(getData);
 
 async function menu(socket) {
   socket.write("1 - Nova venda \n");
@@ -12,7 +15,7 @@ async function menu(socket) {
   socket.write("6 - Buscar vendas por período \n");
   socket.write("10 - Sair \n");
 
-  const option = await getData(socket);
+  const option = await get(socket);
 
   switch (option) {
     case "1":
@@ -46,20 +49,20 @@ async function newSale(socket) {
   let sale = {};
   socket.write("Informe o id do vendedor: \n");
 
-  const sellerId = await getData(socket);
+  const sellerId = await get(socket);
   let seller = sellers.find((seller) => seller.id == parseInt(sellerId));
 
   if (seller) {
     socket.write(`Vendedor: ${seller.name} \n`);
 
     socket.write("Informe o código da loja: \n");
-    sale.storeCode = parseInt(await getData(socket));
+    sale.storeCode = parseInt(await get(socket));
 
     socket.write("Informe o valor da venda: \n");
-    sale.total = parseFloat(await getData(socket));
+    sale.total = parseFloat(await get(socket));
 
     socket.write("Informe a data da venda: \n");
-    sale.date = new Date(await getData(socket));
+    sale.date = new Date(await get(socket));
   }
 
   sale.id = sales.length + 1;
@@ -120,7 +123,7 @@ async function bestStore(socket) {
 
 async function findSellerByName(socket) {
   socket.write("Informe o nome do vendedor: \n");
-  const sellerName = await getData(socket);
+  const sellerName = await get(socket);
 
   const seller = sellers.find((seller) => seller.name == sellerName);
 
@@ -139,7 +142,7 @@ async function findSellerByName(socket) {
 
 async function findStoreByCode(socket) {
   socket.write("Informe o código da loja: \n");
-  const storeCode = await getData(socket);
+  const storeCode = await get(socket);
 
   const store = stores.find((store) => store.id == storeCode);
 
@@ -158,10 +161,10 @@ async function findStoreByCode(socket) {
 
 async function findSaleByPeriod(socket) {
   socket.write("Informe a data inicial: \n");
-  const initialDate = new Date(await getData(socket));
+  const initialDate = new Date(await get(socket));
 
   socket.write("Informe a data final: \n");
-  const finalDate = new Date(await getData(socket));
+  const finalDate = new Date(await get(socket));
 
   const salesByPeriod = sales.filter((sale) => {
     let saleDate = momente(sale.date).isBetween(

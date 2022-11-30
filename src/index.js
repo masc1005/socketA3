@@ -1,8 +1,11 @@
-const net = require("net");
+const net = require("node:net");
+const path = require("node:path");
 
-const { menu } = require("./helper");
+const helper = path.resolve(__dirname, "./helper");
 
-const port = 7075;
+const { menu } = require(helper);
+
+const port = 7020;
 const host = "127.0.0.1";
 
 const server = net.createServer();
