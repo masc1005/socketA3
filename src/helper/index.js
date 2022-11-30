@@ -7,13 +7,13 @@ const { sales, sellers, stores } = require("../infos/sales");
 const get = require(getData);
 
 async function menu(socket) {
-  socket.write("1 - Nova venda \n");
-  socket.write("2 - Melhor vendedor \n");
-  socket.write("3 - Melhor loja \n");
-  socket.write("4 - Buscar vendedor por nome \n");
-  socket.write("5 - Buscar loja por código \n");
-  socket.write("6 - Buscar vendas por período \n");
-  socket.write("10 - Sair \n");
+  socket.write("\n \r1 - Nova venda \n \r");
+  socket.write("2 - Melhor vendedor \n \r");
+  socket.write("3 - Melhor loja \n \r");
+  socket.write("4 - Buscar vendedor por nome \n \r");
+  socket.write("5 - Buscar loja por código \n \r");
+  socket.write("6 - Buscar vendas por período \n \r");
+  socket.write("10 - Sair \n \r \n \r");
 
   const option = await get(socket);
 
@@ -40,28 +40,28 @@ async function menu(socket) {
       socket.end();
       break;
     default:
-      socket.write("Opção inválida \n");
+      socket.write("Opção inválida \n \r");
       menu(socket);
   }
 }
 
 async function newSale(socket) {
   let sale = {};
-  socket.write("Informe o id do vendedor: \n");
+  socket.write(" - Opção Selecionada: Nova Venda \n \r\n \rInforme o id do vendedor: ");
 
   const sellerId = await get(socket);
   let seller = sellers.find((seller) => seller.id == parseInt(sellerId));
 
   if (seller) {
-    socket.write(`Vendedor: ${seller.name} \n`);
+    socket.write(`\n \rVendedor: ${seller.name} \n \r`);
 
-    socket.write("Informe o código da loja: \n");
+    socket.write("Informe o código da loja: ");
     sale.storeCode = parseInt(await get(socket));
 
-    socket.write("Informe o valor da venda: \n");
+    socket.write("\n \rInforme o valor da venda: ");
     sale.total = parseFloat(await get(socket));
 
-    socket.write("Informe a data da venda: \n");
+    socket.write("\n \rInforme a data da venda: ");
     sale.date = new Date(await get(socket));
   }
 
@@ -71,7 +71,7 @@ async function newSale(socket) {
 
   sales.push(sale);
 
-  socket.write("Venda cadastrada com sucesso! \n");
+  socket.write("\n \rVenda cadastrada com sucesso! \n \r");
 
   menu(socket);
 }
@@ -79,7 +79,7 @@ async function newSale(socket) {
 async function betterSeller(socket) {
   let total;
 
-  socket.write("melhor vendedor \n");
+  socket.write(" - Opção Selecionada: Melhor vendedor \n \r");
 
   let bestSeller = { name: "", total: 0 };
 
@@ -94,7 +94,7 @@ async function betterSeller(socket) {
   });
 
   socket.write(
-    `Melhor vendedor: ${bestSeller.name} | Total: ${bestSeller.total} \n`
+    `\n \rMelhor vendedor: ${bestSeller.name} | Total: ${bestSeller.total} \n \r`
   );
 
   // socket.clear();
@@ -102,7 +102,7 @@ async function betterSeller(socket) {
 }
 
 async function bestStore(socket) {
-  socket.write("melhor loja \n");
+  socket.write(" - Opção Selecionada: Melhor loja \n \r");
 
   let bestStore = { name: "", total: 0 };
 
@@ -116,13 +116,13 @@ async function bestStore(socket) {
     }
   });
 
-  socket.write(`Melhor loja: ${bestStore.name} \n`);
+  socket.write(`\n \rMelhor loja: ${bestStore.name} \n \r`);
 
   menu(socket);
 }
 
 async function findSellerByName(socket) {
-  socket.write("Informe o nome do vendedor: \n");
+  socket.write(" - Informe o nome do vendedor: ");
   const sellerName = await get(socket);
 
   const seller = sellers.find((seller) => seller.name == sellerName);
@@ -132,16 +132,16 @@ async function findSellerByName(socket) {
     .reduce((acc, cur) => acc + cur.total, 0);
 
   if (seller) {
-    socket.write(`Vendedor: ${seller.name} | Total: ${total} \n`);
+    socket.write(`\n \r \n \rVendedor: ${seller.name} | Total: ${total} \n \r`);
   } else {
-    socket.write("Vendedor não encontrado \n");
+    socket.write("Vendedor não encontrado \n \r");
   }
 
   menu(socket);
 }
 
 async function findStoreByCode(socket) {
-  socket.write("Informe o código da loja: \n");
+  socket.write(" - Informe o código da loja: ");
   const storeCode = await get(socket);
 
   const store = stores.find((store) => store.id == storeCode);
@@ -151,19 +151,19 @@ async function findStoreByCode(socket) {
     .reduce((acc, cur) => acc + cur.total, 0);
 
   if (store) {
-    socket.write(`Loja: ${store.name} | Total: ${total} \n`);
+    socket.write(`\n \r \n \rLoja: ${store.name} | Total: ${total} \n \r`);
   } else {
-    socket.write("Loja não encontrada \n");
+    socket.write("Loja não encontrada \n \r");
   }
 
   menu(socket);
 }
 
 async function findSaleByPeriod(socket) {
-  socket.write("Informe a data inicial: \n");
+  socket.write("Informe a data inicial: \n \r");
   const initialDate = new Date(await get(socket));
 
-  socket.write("Informe a data final: \n");
+  socket.write("Informe a data final: \n \r");
   const finalDate = new Date(await get(socket));
 
   const salesByPeriod = sales.filter((sale) => {
@@ -178,13 +178,13 @@ async function findSaleByPeriod(socket) {
   if (salesByPeriod.length > 0) {
     salesByPeriod.map((sale) => {
       socket.write(
-        `Vendedor: ${sale.sellersName} | Loja: ${sale.storeCode} | Valor: ${sale.total} | Data: ${sale.date} \n`
+        `Vendedor: ${sale.sellersName} | Loja: ${sale.storeCode} | Valor: ${sale.total} | Data: ${sale.date} \n \r`
       );
     });
 
     menu(socket);
   } else {
-    socket.write("Nenhuma venda encontrada \n");
+    socket.write("Nenhuma venda encontrada \n \r");
   }
 }
 
