@@ -13,6 +13,7 @@ async function menu(socket) {
   socket.write("4 - Buscar vendedor por nome \n \r");
   socket.write("5 - Buscar loja por código \n \r");
   socket.write("6 - Buscar vendas por período \n \r");
+  socket.write("7 - Buscar vendedor por código \n \r");
   socket.write("10 - Sair \n \r \n \r");
 
   const option = await get(socket);
@@ -36,6 +37,9 @@ async function menu(socket) {
     case "6":
       findSaleByPeriod(socket);
       break;
+    case "7":
+      findSellerById(socket);
+      break;
     case "10":
       socket.end();
       break;
@@ -47,7 +51,9 @@ async function menu(socket) {
 
 async function newSale(socket) {
   let sale = {};
-  socket.write(" - Opção Selecionada: Nova Venda \n \r\n \rInforme o id do vendedor: ");
+  socket.write(
+    " - Opção Selecionada: Nova Venda \n \r\n \rInforme o id do vendedor: "
+  );
 
   const sellerId = await get(socket);
   let seller = sellers.find((seller) => seller.id == parseInt(sellerId));
@@ -94,10 +100,8 @@ async function betterSeller(socket) {
   });
 
   socket.write(
-    `\n \rMelhor vendedor: ${bestSeller.name} | Total: ${bestSeller.total} \n \r`
+    `\n\r Melhor vendedor: ${bestSeller.name} | Total: ${bestSeller.total} \n \r`
   );
-
-  // socket.clear();
   menu(socket);
 }
 
@@ -127,11 +131,29 @@ async function findSellerByName(socket) {
 
   const seller = sellers.find((seller) => seller.name == sellerName);
 
-  const total = sales
-    .filter((sale) => sale.sellersName == seller.name)
-    .reduce((acc, cur) => acc + cur.total, 0);
+  if (seller) {
+    const total = sales
+      .filter((sale) => sale.sellersName == seller.name)
+      .reduce((acc, cur) => acc + cur.total, 0);
+
+    socket.write(`\n \r \n \rVendedor: ${seller.name} | Total: ${total} \n \r`);
+  } else {
+    socket.write("Vendedor não encontrado \n \r");
+  }
+
+  menu(socket);
+}
+
+async function findSellerById(socket) {
+  socket.write(" - Informe o id do vendedor: ");
+  const sellerId = await get(socket);
+
+  const seller = sellers.find((seller) => seller.id == sellerId);
 
   if (seller) {
+    const total = sales
+      .filter((sale) => sale.sellersName == seller.name)
+      .reduce((acc, cur) => acc + cur.total, 0);
     socket.write(`\n \r \n \rVendedor: ${seller.name} | Total: ${total} \n \r`);
   } else {
     socket.write("Vendedor não encontrado \n \r");
@@ -146,11 +168,10 @@ async function findStoreByCode(socket) {
 
   const store = stores.find((store) => store.id == storeCode);
 
-  const total = sales
-    .filter((sale) => sale.storeCode == store.id)
-    .reduce((acc, cur) => acc + cur.total, 0);
-
   if (store) {
+    const total = sales
+      .filter((sale) => sale.storeCode == store.id)
+      .reduce((acc, cur) => acc + cur.total, 0);
     socket.write(`\n \r \n \rLoja: ${store.name} | Total: ${total} \n \r`);
   } else {
     socket.write("Loja não encontrada \n \r");
